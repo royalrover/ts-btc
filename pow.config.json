@@ -1,3 +1,4 @@
 {
-    "factor": "20"
+    "factor": "20",
+    "dbpath": "/Users/young/github/blockchain-node/vdb/"
 }

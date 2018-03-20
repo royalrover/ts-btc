@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var crypto = require("crypto");
+const crypto = require("crypto");
+const transaction_1 = require("./tx/transaction");
 /**
  *  区块信息：
  *  区块大小：用字节表示的区块数据大小
@@ -14,129 +15,97 @@ var crypto = require("crypto");
     交易计数器：交易的数量
     交易：记录在区块里的交易信息
  */
-var Block = /** @class */ (function () {
-    function Block(size, hash, prevHash, timestamp, factor, nonce, data) {
-        if (nonce === void 0) { nonce = 0; }
+class Block {
+    constructor(size, hash, prevHash, timestamp, factor, nonce = 0, txs) {
+        this.blockSize = 0;
         this.blockSize = size;
         this.hash = hash;
         this.prevHash = prevHash;
         this.timestamp = timestamp;
         this.diffcult_factor = factor;
         this.nonce = nonce;
-        this.deal_data = data;
+        this.txs = transaction_1.Transaction.createTransactionFromUnserialize(txs);
         this.ack_num = 0;
     }
-    Object.defineProperty(Block.prototype, "$hash", {
-        get: function () {
-            return this.hash;
-        },
-        set: function (value) {
-            this.hash = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Block.prototype, "$prevHash", {
-        get: function () {
-            return this.prevHash;
-        },
-        set: function (value) {
-            this.prevHash = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Block.prototype, "$blockSize", {
-        get: function () {
-            return this.blockSize;
-        },
-        set: function (value) {
-            this.blockSize = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Block.prototype, "$nonce", {
-        get: function () {
-            return this.nonce;
-        },
-        set: function (value) {
-            this.nonce = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Block.prototype, "$minner", {
-        get: function () {
-            return this.minner;
-        },
-        set: function (value) {
-            this.minner = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Block.prototype, "$height", {
-        get: function () {
-            return this.height;
-        },
-        set: function (value) {
-            this.height = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Block.prototype, "$diffcult_factor", {
-        get: function () {
-            return this.diffcult_factor;
-        },
-        set: function (value) {
-            this.diffcult_factor = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Block.prototype, "$deal_data", {
-        get: function () {
-            return this.deal_data;
-        },
-        set: function (value) {
-            this.deal_data = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Block.prototype, "$ack_num", {
-        get: function () {
-            return this.ack_num;
-        },
-        set: function (value) {
-            this.ack_num = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Block.prototype, "$timestamp", {
-        get: function () {
-            return this.timestamp;
-        },
-        set: function (value) {
-            this.timestamp = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Block.prototype.createBlock = function (prevHash, factor, data) {
+    get $hash() {
+        return this.hash;
+    }
+    set $hash(value) {
+        this.hash = value;
+    }
+    get $prevHash() {
+        return this.prevHash;
+    }
+    set $prevHash(value) {
+        this.prevHash = value;
+    }
+    get $blockSize() {
+        return this.blockSize;
+    }
+    set $blockSize(value) {
+        this.blockSize = value;
+    }
+    get $nonce() {
+        return this.nonce;
+    }
+    set $nonce(value) {
+        this.nonce = value;
+    }
+    get $minner() {
+        return this.minner;
+    }
+    set $minner(value) {
+        this.minner = value;
+    }
+    get $height() {
+        return this.height;
+    }
+    set $height(value) {
+        this.height = value;
+    }
+    get $diffcult_factor() {
+        return this.diffcult_factor;
+    }
+    set $diffcult_factor(value) {
+        this.diffcult_factor = value;
+    }
+    get $ack_num() {
+        return this.ack_num;
+    }
+    set $ack_num(value) {
+        this.ack_num = value;
+    }
+    get $timestamp() {
+        return this.timestamp;
+    }
+    set $timestamp(value) {
+        this.timestamp = value;
+    }
+    get $txs() {
+        return this.txs;
+    }
+    set $txs(value) {
+        this.txs = value;
+    }
+    createBlock(prevHash, factor, data) {
         return new Block(0, '', prevHash, Date.now(), factor, 0, data);
-    };
-    Block.prototype.computeHash = function () {
-        var sha256 = crypto.createHash('sha256');
-        sha256.update("" + this.prevHash + this.nonce.toString(16) + this.deal_data, 'utf8');
-        var hash = sha256.digest('hex');
+    }
+    setBlockSize() {
+        this.txs && this.txs.forEach((tx) => {
+            this.blockSize += tx.getLength();
+        });
+    }
+    computeHash() {
+        let txids = '';
+        this.txs && this.txs.forEach((tx) => {
+            txids += tx.$txId;
+        });
+        let sha256 = crypto.createHash('sha256');
+        sha256.update(`${this.prevHash}${this.nonce.toString(16)}${txids}`, 'utf8');
+        let hash = sha256.digest('hex');
         //    this.$hash = hash;
         return hash;
-    };
-    return Block;
-}());
+    }
+}
 exports.Block = Block;
 //# sourceMappingURL=block.js.map

@@ -1,62 +1,49 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var crypto = require("crypto");
-var ProofOfWork = /** @class */ (function () {
-    function ProofOfWork(factor, block) {
-        if (factor === void 0) { factor = 6; }
+const crypto = require("crypto");
+class ProofOfWork {
+    get $diffcult_factor() {
+        return this.diffcult_factor;
+    }
+    set $diffcult_factor(value) {
+        this.diffcult_factor = value;
+    }
+    get $block() {
+        return this.block;
+    }
+    set $block(value) {
+        this.block = value;
+    }
+    get $goal() {
+        return this.goal;
+    }
+    set $goal(value) {
+        this.goal = value;
+    }
+    constructor(factor = 6, block) {
         this.diffcult_factor = factor;
         this.block = block;
         this.setGoal();
     }
-    Object.defineProperty(ProofOfWork.prototype, "$diffcult_factor", {
-        get: function () {
-            return this.diffcult_factor;
-        },
-        set: function (value) {
-            this.diffcult_factor = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ProofOfWork.prototype, "$block", {
-        get: function () {
-            return this.block;
-        },
-        set: function (value) {
-            this.block = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ProofOfWork.prototype, "$goal", {
-        get: function () {
-            return this.goal;
-        },
-        set: function (value) {
-            this.goal = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ProofOfWork.prototype.setGoal = function () {
+    setGoal() {
         this.goal = Math.pow(2, 256 - this.$diffcult_factor);
-    };
-    ProofOfWork.prototype.mineGold = function () {
-        var counter = this.block.$nonce;
-        var factor = this.diffcult_factor;
-        var block = this.block;
-        var p1 = process.uptime() * 1000;
+    }
+    mineGold() {
+        let counter = this.block.$nonce;
+        let factor = this.diffcult_factor;
+        let block = this.block;
+        let p1 = process.uptime() * 1000;
         console.log('开始挖矿');
         try {
             do {
-                var hash = block.computeHash();
+                let hash = block.computeHash();
                 /* if(counter % 1000000 == 0){
                     console.log(counter,hash,Number.parseInt(hash,16),this.goal)
                 } */
                 if (Number.parseInt(hash, 16) <= this.goal) {
-                    console.log('*********************************************');
-                    console.log("wow\uFF0C\u6316\u5230\u77FF\u5566\uFF0C\u5386\u65F6" + (process.uptime() * 1000 - p1) + "s");
-                    console.log("current hash: " + hash + "    goal: " + this.goal.toString(16));
+                    //    console.log('*********************************************');
+                    console.log(`wow，挖到矿啦，历时${process.uptime() * 1000 - p1}s`);
+                    console.log(`current hash: ${hash}    goal: ${this.goal.toString(16)}`);
                     block.$hash = hash;
                     block.$diffcult_factor = factor;
                     block.$minner = 'self';
@@ -72,20 +59,23 @@ var ProofOfWork = /** @class */ (function () {
             return e;
         }
         return this.block;
-    };
-    ProofOfWork.prototype.verify = function (block) {
-        var nonce = block.$nonce;
-        var sha256 = crypto.createHash('sha256');
-        sha256.update("" + block.$prevHash + nonce.toString(16) + block.$deal_data, 'utf8');
-        var hash = sha256.digest('hex');
+    }
+    verify(block) {
+        let txids = '';
+        block.$txs && block.$txs.forEach((tx) => {
+            txids += tx.$txId;
+        });
+        let nonce = block.$nonce;
+        let sha256 = crypto.createHash('sha256');
+        sha256.update(`${block.$prevHash}${nonce.toString(16)}${txids}`, 'utf8');
+        let hash = sha256.digest('hex');
         if (Number.parseInt(hash, 16) <= this.goal) {
             return true;
         }
         else {
             return false;
         }
-    };
-    return ProofOfWork;
-}());
+    }
+}
 exports.ProofOfWork = ProofOfWork;
 //# sourceMappingURL=ProofOfWork.js.map

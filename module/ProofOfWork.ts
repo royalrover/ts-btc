@@ -54,7 +54,7 @@ export class ProofOfWork {
                     console.log(counter,hash,Number.parseInt(hash,16),this.goal)
                 } */
                 if(Number.parseInt(hash,16) <= this.goal){
-                    console.log('*********************************************');
+                //    console.log('*********************************************');
                     console.log(`wow，挖到矿啦，历时${process.uptime()*1000 - p1}s`);
                     console.log(`current hash: ${hash}    goal: ${this.goal.toString(16)}`);
     
@@ -76,9 +76,13 @@ export class ProofOfWork {
     }
 
     public verify(block: Block){
+        let txids = '';
+		block.$txs && block.$txs.forEach((tx)=>{
+			txids += tx.$txId;
+		});
         let nonce = block.$nonce;
         let sha256 = crypto.createHash('sha256');
-        sha256.update(`${block.$prevHash}${nonce.toString(16)}${block.$deal_data}`,'utf8');
+        sha256.update(`${block.$prevHash}${nonce.toString(16)}${txids}`,'utf8');
         let hash = sha256.digest('hex');
         if(Number.parseInt(hash,16) <= this.goal){
             return true;

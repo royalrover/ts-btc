@@ -1,11 +1,13 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "target": "es5",
+        "target": "es2015",
         "module": "commonjs",
         "sourceMap": true,
-        "lib": [ "es2015" ]
+        "lib": [ "es2015", "es2016.array.include" ],
+        "experimentalDecorators": true
     },
+
     "exclude": [
         "node_modules"
     ]

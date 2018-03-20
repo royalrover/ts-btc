@@ -7,54 +7,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var blockchain_1 = require("./module/blockchain");
-var timers_1 = require("timers");
+const blockchain_1 = require("./module/blockchain");
+const timers_1 = require("timers");
+const transaction_1 = require("./module/tx/transaction");
+const fs = require("fs");
 function wait(time) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, new Promise(function (res, rej) {
-                    timers_1.setTimeout(res, time);
-                })];
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((res, rej) => {
+            timers_1.setTimeout(res, time);
+        });
+    });
+}
+function clearDB() {
+    ['./vdb/blocks.json', './vdb/chainHeight.json', './vdb/lhash.json'].forEach((p) => {
+        fs.writeFileSync(p, JSON.stringify({}, null, 2), {
+            encoding: 'utf8',
         });
     });
 }
 function main() {
-    var chain = blockchain_1.BlockChain.initBlockchain();
-    chain.addBlockToConsensus('Alesis Hunter 转账给 Arsène Wenger 10yen');
-    //    await wait(1000);
+    clearDB();
+    let chain = blockchain_1.BlockChain.createBlockChain();
+    /* chain.addBlockToConsensus('Alesis Hunter 转账给 Arsène Wenger 10yen');
     chain.addBlockToConsensus('Alex Sanchez 转账给 Arron Ramsey 175$');
-    //    await wait(2000);
     chain.addBlockToConsensus('Jack Wilshere 转账给 Arsenal 8yen(罚款)');
-    //    await wait(1000);
-    chain.addBlockToConsensus('Arsenal 转账给 Mesut Özil 300000$(周薪)');
+    chain.addBlockToConsensus('Arsenal 转账给 Mesut Özil 300000$(周薪)'); */
+    chain.addBlockWithMeta([transaction_1.Transaction.createCoinbaseTx('阿森纳fc', 'No.4th')], 45, 20);
+    chain.addBlockWithMeta([transaction_1.Transaction.createCoinbaseTx('阿森纳fc', 'No.4th')], 45, 20);
+    chain.addBlockWithMeta([transaction_1.Transaction.createCoinbaseTx('阿森纳fc', 'No.4th')], 45, 20);
+    chain.addBlockWithMeta([transaction_1.Transaction.createCoinbaseTx('阿森纳fc', 'No.4th')], 45, 20);
+    chain.addBlockWithMeta([transaction_1.Transaction.createCoinbaseTx('阿森纳fc', 'No.4th')], 45, 20);
+    chain.addBlockWithMeta([transaction_1.Transaction.createCoinbaseTx('阿森纳fc', 'No.4th')], 45, 20);
+    chain.addBlockWithMeta([transaction_1.Transaction.createCoinbaseTx('阿森纳fc', 'No.4th')], 45, 20);
+    chain.addBlockWithMeta([transaction_1.Transaction.createCoinbaseTx('阿森纳fc', 'No.4th')], 45, 20);
+    chain.addBlockWithMeta([transaction_1.Transaction.createCoinbaseTx('阿森纳fc', 'No.4th')], 45, 20);
+    chain.addBlockWithMeta([transaction_1.Transaction.createCoinbaseTx('阿莱士亨特', 'AH')], 45, 20);
+    chain.addBlockToConsensus([transaction_1.Transaction.createTransaction('Alesis Hunter', '阿莱士亨特', 'AH', 'Arsène Wenger', '温格', 5)]);
+    chain.addBlockToConsensus([transaction_1.Transaction.createTransaction('Arsenal', '阿森纳fc', 'No.4th', 'Alex Sanchez', '桑切斯', 20)]);
+    chain.addBlockToConsensus([transaction_1.Transaction.createTransaction('Arsenal', '阿森纳fc', 'No.4th', 'Jack Wilshere', '小威胁', 10)]);
+    chain.addBlockToConsensus([transaction_1.Transaction.createTransaction('Alex Sanchez', '桑切斯', 'aschz', 'Arron Ramsey', '拉神', 1.75)]);
+    chain.addBlockToConsensus([transaction_1.Transaction.createTransaction('Jack Wilshere', '小威胁', '太子爷', '阿森纳fc', '阿森纳fc', 0.8)]);
+    chain.addBlockToConsensus([transaction_1.Transaction.createTransaction('Arsenal', '阿森纳fc', 'No.4th', 'Mesut Özil', '大眼仔', 30)]);
+    chain.addBlockToConsensus([transaction_1.Transaction.createTransaction('Arsenal', '阿森纳fc', 'No.4th', 'Arron Ramsey', '拉神', 15)]);
+    //    let chain = BlockChain.restoreBlockchainFromDB();
     chain.printChain();
 }
 main();

@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import { Transaction } from './tx/transaction';
 /**
  *  区块信息：
  *  区块大小：用字节表示的区块数据大小
@@ -70,14 +71,6 @@ export class Block {
 		this.diffcult_factor = value;
 	}
 
-	public get $deal_data(): string {
-		return this.deal_data;
-	}
-
-	public set $deal_data(value: string) {
-		this.deal_data = value;
-	}
-
 	public get $ack_num(): number {
 		return this.ack_num;
 	}
@@ -93,36 +86,54 @@ export class Block {
 	public set $timestamp(value: number) {
 		this.timestamp = value;
 	}
-    private blockSize: number;
+
+	public get $txs(): Array<Transaction> {
+		return this.txs;
+	}
+
+	public set $txs(value: Array<Transaction>) {
+		this.txs = value;
+	}
+	
+    private blockSize: number = 0;
     private hash: string;
     private prevHash: string;
     private timestamp: number;
     private diffcult_factor: number;
     private nonce: number;
-    private deal_data: string;
+	private txs: Array<Transaction>;
     private minner: string;
     private ack_num: number;
     private height: number;
 
-    constructor (size: number, hash: string, prevHash: string, timestamp: number, factor: number, nonce = 0, data: string){
+    constructor (size: number, hash: string, prevHash: string, timestamp: number, factor: number, nonce = 0, txs: Array<Transaction>){
         this.blockSize = size;
         this.hash = hash;
         this.prevHash = prevHash;
         this.timestamp = timestamp;
         this.diffcult_factor = factor;
         this.nonce = nonce;
-		this.deal_data = data;
+		this.txs = Transaction.createTransactionFromUnserialize(txs);
 		this.ack_num = 0;
     }
 
-    public createBlock(prevHash: string, factor: number, data: string){
+    public createBlock(prevHash: string, factor: number, data: Array<Transaction>){
         return new Block(0, '', prevHash, Date.now(), factor, 0, data);
-    }
-
+	}
+	
+	public setBlockSize(){
+		this.txs && this.txs.forEach((tx)=>{
+			this.blockSize += tx.getLength();
+		});
+	}
 
     public computeHash(){
-        let sha256 = crypto.createHash('sha256');
-        sha256.update(`${this.prevHash}${this.nonce.toString(16)}${this.deal_data}`,'utf8');
+		let txids = '';
+		this.txs && this.txs.forEach((tx)=>{
+			txids += tx.$txId;
+		});
+		let sha256 = crypto.createHash('sha256');
+        sha256.update(`${this.prevHash}${this.nonce.toString(16)}${txids}`,'utf8');
         let hash = sha256.digest('hex');
 	//    this.$hash = hash;
 		return hash;
