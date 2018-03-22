@@ -5,8 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "@types/node": "^9.4.7",
-    "moment": "^2.21.0",
-    "reflect-metadata": "^0.1.12"
+    "moment": "^2.21.0"
   },
   "devDependencies": {},
   "scripts": {
