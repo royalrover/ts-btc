@@ -1,0 +1,32 @@
+{
+  "name": "blockchain-node",
+  "version": "1.0.0",
+  "description": "node版本的简易btc实现",
+  "main": "main.js",
+  "dependencies": {
+    "@types/node": "^9.4.7",
+    "moment": "^2.21.0",
+    "reflect-metadata": "^0.1.12"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/royalrover/ts-btc.git"
+  },
+  "keywords": [
+    "node",
+    "btc",
+    "blockchain",
+    "typescript",
+    "javascript"
+  ],
+  "author": "yangli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/royalrover/ts-btc/issues"
+  },
+  "homepage": "https://github.com/royalrover/ts-btc#readme"
+}

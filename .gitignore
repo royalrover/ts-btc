@@ -8,3 +8,5 @@ index_prod.html
 coverage
 tmp
 .vscode
+.js
+.js.map
